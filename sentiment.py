@@ -13,6 +13,8 @@ load_dotenv()
 
 class NewsCrawler:
     def __init__(self) -> None:
+        # TODO:: business and tech category loop
+        # TODO:: run this daily trigger discord webhook
         self.news_api_url = 'https://newsapi.org/v2/top-headlines'
         openai.api_key = os.getenv("OPENAI_APIKEY")
         self.client = openai
