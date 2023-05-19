@@ -1,6 +1,5 @@
 import json
 import csv
-from datetime import datetime, timezone, timedelta
 import os
 import time
 import nltk
@@ -58,30 +57,42 @@ class NewsCrawler:
             'page': 1
         }
         titles_array = self.get_news_from_news_api(self.news_api_everything_url, params)
+        titles_array = ' '.join(titles_array)
         # translated_titles = translate_titles(self, ' '.join(titles_array))
-        translated_titles = generate_summary(self, ' '.join(titles_array))
+        translated_titles = generate_summary(self, titles_array)
         result = self.create_sentiment_analysis(translated_titles)
-        return result
+        return translated_titles, result
 
 
-start_date = datetime.strptime('2023-05-19', '%Y-%m-%d').replace(tzinfo=timezone.utc)
-end_date = datetime.strptime('2023-05-20', '%Y-%m-%d').replace(tzinfo=timezone.utc)
-# end_date = datetime.strptime('2023-05-19', '%Y-%m-%d').replace(tzinfo=timezone.utc)
+def main():
+    start_date = datetime.utcnow().date()
+    news_crawler = NewsCrawler()
+    summary, flag = news_crawler.run(start_date)
 
-news_crawler = NewsCrawler()
-f = open('./sentiment_descriptions.csv', 'a')
-writer = csv.writer(f, delimiter=',', escapechar='', quoting=csv.QUOTE_NONE)
-
-
-while start_date < end_date:
-    flag = news_crawler.run(start_date)
-    row = []
-    row.append(datetime.strftime(start_date - timedelta(days=1), '%Y-%m-%d'))
-    row.append(flag)
-    writer.writerow(row)
-    # print("#" * 30 + flag + "#" * 30)
-    time.sleep(2)
-    start_date = start_date + timedelta(days=1)
+    data = prepare_message(summary, flag, start_date)
+    requests.post(
+        os.getenv("BORG_AGENT_WEBHOOK"), headers={"Content-Type": "application/json"}, data=json.dumps(data)
+    )
 
 
-f.close()
+def backfill():
+    start_date = datetime.strptime('2023-05-19', '%Y-%m-%d').replace(tzinfo=timezone.utc)
+    end_date = datetime.strptime('2023-05-20', '%Y-%m-%d').replace(tzinfo=timezone.utc)
+
+    news_crawler = NewsCrawler()
+    f = open('./sentiment_descriptions.csv', 'a')
+    writer = csv.writer(f, delimiter=',', escapechar='', quoting=csv.QUOTE_NONE)
+
+    while start_date < end_date:
+        summary, flag = news_crawler.run(start_date)
+        row = []
+        row.append(datetime.strftime(start_date - timedelta(days=1), '%Y-%m-%d'))
+        row.append(flag)
+        writer.writerow(row)
+        # print("#" * 30 + flag + "#" * 30)
+        time.sleep(2)
+        start_date = start_date + timedelta(days=1)
+
+    f.close()
+
+main()

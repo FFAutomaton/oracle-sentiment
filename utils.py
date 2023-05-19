@@ -1,3 +1,31 @@
+from datetime import datetime, timezone, timedelta
+
+
+def prepare_message(summary, flag, start_date):
+    if flag == 1:
+        message = "You should be a bull today!"
+        image_url = "https://images.unsplash.com/photo-1618325508550-951512a1e82d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZmlyZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
+    elif flag == -1:
+        message = "You should be a bear today!!"
+        image_url = "https://www.pnas.org/cms/10.1073/pnas.2213762119/asset/0f97fae4-c4ce-406c-bb26-1fe058acca2b/assets/images/large/pnas.2213762119fig01.jpg"
+    else:
+        message = "Today is neutral according to news!"
+        image_url = "https://www.tikvahlake.com/wp-content/uploads/Boredom-768x464.jpeg"
+    data = {
+      "content": "Daily Global Sentiment Analysis",
+      "embeds": [
+        {
+            "title": f"{message} {datetime.strftime(start_date - timedelta(days=1), '%Y-%m-%d')}",
+            "description": summary,
+            "image": {
+                "url": image_url
+            }
+        }
+      ]
+    }
+    return data
+
+
 def generate_summary(obj, input_text):
     # prompt = f"""Assume that you are a crypto investor.
     #     Analyze the market behaviour as positive, negative or neutral.
