@@ -2,3 +2,5 @@ python-dotenv
 nltk==3.8.1
 openai
 requests
+aylien-news-api
+

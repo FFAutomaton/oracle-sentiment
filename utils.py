@@ -1,7 +1,7 @@
 from datetime import datetime, timezone, timedelta
 
 
-def prepare_message(summary, flag, start_date):
+def prepare_message_daily(summary, flag, start_date):
     if flag == 1:
         message = "You should be a bull today!"
         image_url = "https://images.unsplash.com/photo-1618325508550-951512a1e82d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZmlyZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
@@ -17,6 +17,25 @@ def prepare_message(summary, flag, start_date):
         {
             "title": f"{message} {datetime.strftime(start_date - timedelta(days=1), '%Y-%m-%d')}",
             "description": summary,
+            "image": {
+                "url": image_url
+            }
+        }
+      ]
+    }
+    return data
+
+
+def prepare_message_15m(titles, start_date):
+    message = "You should pay attention to the news titles!!"
+    image_url = "https://play-lh.googleusercontent.com/XFHFLXe44ikxLT0CLj8vF0DsPRj829qeHQz-6_tSqmbkAZNauGYt03Cc8b4qY7vbfV0"
+
+    data = {
+      "content": "News Alert",
+      "embeds": [
+        {
+            "title": f"{message} {datetime.strftime(start_date, '%Y-%m-%d %H:%M:%S`')}",
+            "description": titles,
             "image": {
                 "url": image_url
             }
