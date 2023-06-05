@@ -1,5 +1,6 @@
 import requests
 import os
+import json
 from services.news_crawler import NewsCrawler, prepare_message_daily, prepare_message_15m
 from services.aylien_crawler import AylienCrawler
 from dotenv import load_dotenv
@@ -22,10 +23,10 @@ def main():
         )
 
     aylien_crawler = AylienCrawler()
-    titles = aylien_crawler.fetch_new_stories_titles()
-    if len(titles) > 0:
+    titles, alert = aylien_crawler.fetch_new_stories_titles()
+    if alert != 0:
 
-        data = prepare_message_15m(titles, start_date)
+        data = prepare_message_15m(titles, alert, start_date)
         requests.post(
             os.getenv("BORG_AGENT_WEBHOOK"), headers={"Content-Type": "application/json"}, data=json.dumps(data)
         )

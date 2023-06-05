@@ -2,6 +2,7 @@ url = 'https://api.aylien.com/news/stories?aql=language:(en) AND title: (crypto,
 import time
 import aylien_news_api
 from aylien_news_api.rest import ApiException
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 
 class AylienCrawler:
@@ -30,10 +31,24 @@ class AylienCrawler:
     stories = response.stories
     titles = []
     for story in stories:
+      if story.sentiment.body.polarity != "neutral":
         titles.append(story.title)
     titles = ' '.join(titles)
-    return titles
+    alert = self.create_sentiment_analysis(titles)
+    return titles, alert
 
+  def create_sentiment_analysis(self, summary):
+    sia = SentimentIntensityAnalyzer()
+    sentiment = sia.polarity_scores(summary)
+    # print(summary)
+    print('Compound:', sentiment['compound'], 'Positive:', sentiment['pos'], 'Negative:', sentiment['neg'], 'Neutral:',
+          sentiment['neu'])
+    if sentiment['compound'] >= 0.05:
+      return 1
+    elif sentiment['compound'] <= -0.05:
+      return -1
+    else:
+      return 0
 
 
 

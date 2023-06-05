@@ -26,8 +26,8 @@ def prepare_message_daily(summary, flag, start_date):
     return data
 
 
-def prepare_message_15m(titles, start_date):
-    message = "You should pay attention to the news titles!!"
+def prepare_message_15m(titles, alert, start_date):
+    message = f"Sentiment might change to: {alert} !!"
     image_url = "https://play-lh.googleusercontent.com/XFHFLXe44ikxLT0CLj8vF0DsPRj829qeHQz-6_tSqmbkAZNauGYt03Cc8b4qY7vbfV0"
 
     data = {
