@@ -20,7 +20,7 @@ class AylienCrawler:
       # 'published_at_start': 'NOW-1DAY',
       'published_at_end': 'NOW',
       'cursor': '*',
-      'source_rankings_alexa_rank_min': 25,
+      'source_rankings_alexa_rank_min': 10,
       'source_rankings_alexa_rank_max': 100,
       'per_page': 100,
       'sort_by': 'recency'
