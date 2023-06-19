@@ -22,14 +22,14 @@ def main():
             os.getenv("BORG_AGENT_WEBHOOK"), headers={"Content-Type": "application/json"}, data=json.dumps(data)
         )
 
-    aylien_crawler = AylienCrawler()
-    titles, alert = aylien_crawler.fetch_new_stories_titles()
-    if alert != 0:
-
-        data = prepare_message_15m(titles, alert, start_date)
-        requests.post(
-            os.getenv("BORG_AGENT_WEBHOOK"), headers={"Content-Type": "application/json"}, data=json.dumps(data)
-        )
+    # aylien_crawler = AylienCrawler()
+    # titles, alert = aylien_crawler.fetch_new_stories_titles()
+    # if alert != 0:
+    #
+    #     data = prepare_message_15m(titles, alert, start_date)
+    #     requests.post(
+    #         os.getenv("BORG_AGENT_WEBHOOK"), headers={"Content-Type": "application/json"}, data=json.dumps(data)
+    #     )
 
 
 def backfill():
